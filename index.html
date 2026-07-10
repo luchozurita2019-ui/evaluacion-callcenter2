@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación de Ingreso — Ejecutivo de Ventas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0F2144;
+    --navy-2:#16305C;
+    --slate:#3C4E70;
+    --cream:#F6F4EE;
+    --card:#FFFFFF;
+    --gold:#C79A3E;
+    --gold-2:#E4C578;
+    --ok:#2E7D4F;
+    --bad:#B8412F;
+    --line:#E4E0D6;
+    --text:#1B2333;
+    --muted:#6B7385;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    padding-bottom:80px;
+  }
+
+  /* HEADER */
+  .topbar{
+    background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 100%);
+    color:#fff;
+    padding:34px 24px 60px;
+    position:relative;
+    overflow:hidden;
+  }
+  .topbar::after{
+    content:"";
+    position:absolute;
+    right:-60px; top:-60px;
+    width:260px;height:260px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(199,154,62,.35), transparent 70%);
+  }
+  .topbar-inner{max-width:760px;margin:0 auto;position:relative;z-index:2;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--gold-2);
+    display:flex;align-items:center;gap:8px;
+    margin-bottom:14px;
+  }
+  .eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--gold-2);box-shadow:0 0 0 4px rgba(228,197,120,.25);}
+  h1{
+    font-family:'Sora',sans-serif;
+    font-weight:800;
+    font-size:clamp(26px,4vw,36px);
+    margin:0 0 10px;
+    letter-spacing:-0.01em;
+  }
+  .topbar p{
+    color:#C7CFE0;
+    font-size:15px;
+    line-height:1.55;
+    max-width:560px;
+    margin:0 0 20px;
+  }
+  .meta-row{display:flex;flex-wrap:wrap;gap:10px;}
+  .meta-pill{
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.16);
+    padding:7px 14px;
+    border-radius:100px;
+    font-size:12.5px;
+    font-family:'IBM Plex Mono',monospace;
+    color:#E9ECF5;
+  }
+
+  /* PROGRESS */
+  .progress-wrap{
+    max-width:760px;
+    margin:-30px auto 30px;
+    padding:0 24px;
+    position:relative;
+    z-index:5;
+  }
+  .progress-card{
+    background:var(--card);
+    border-radius:14px;
+    box-shadow:0 10px 30px -12px rgba(15,33,68,.25);
+    padding:16px 20px;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    border:1px solid var(--line);
+  }
+  .progress-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    color:var(--slate);
+    white-space:nowrap;
+    min-width:96px;
+  }
+  .progress-track{
+    flex:1;
+    height:8px;
+    background:#EDEAE1;
+    border-radius:100px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,var(--gold),var(--gold-2));
+    border-radius:100px;
+    transition:width .35s ease;
+  }
+
+  /* FORM CONTAINER */
+  main{max-width:760px;margin:0 auto;padding:0 24px;}
+
+  .q-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:26px 26px 22px;
+    margin-bottom:18px;
+    transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  .q-card.answered{border-color:#D8C68F; box-shadow:0 4px 18px -10px rgba(199,154,62,.4);}
+  .q-head{display:flex;gap:14px;align-items:baseline;margin-bottom:14px;}
+  .q-num{
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:600;
+    font-size:13px;
+    color:var(--gold);
+    background:rgba(199,154,62,.12);
+    border-radius:8px;
+    padding:4px 9px;
+    flex-shrink:0;
+  }
+  .q-text{
+    font-family:'Sora',sans-serif;
+    font-weight:600;
+    font-size:16.5px;
+    line-height:1.45;
+    color:var(--navy);
+  }
+  .options{display:flex;flex-direction:column;gap:9px;}
+  .option{
+    display:flex;
+    align-items:flex-start;
+    gap:11px;
+    padding:12px 14px;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    cursor:pointer;
+    font-size:14.5px;
+    line-height:1.4;
+    color:var(--text);
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .option:hover{border-color:#C9C2AE; background:#FBFAF6;}
+  .option input{margin-top:2px; accent-color:var(--navy);}
+  .option.selected{border-color:var(--navy); background:#EEF2F9;}
+
+  /* SUBMIT */
+  .submit-zone{
+    text-align:center;
+    padding:36px 0 10px;
+  }
+  .hint{
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:16px;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  #finishBtn{
+    background:var(--navy);
+    color:#fff;
+    border:none;
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:15.5px;
+    padding:16px 42px;
+    border-radius:100px;
+    cursor:pointer;
+    letter-spacing:.01em;
+    box-shadow:0 12px 24px -10px rgba(15,33,68,.5);
+    transition:transform .15s ease, background .15s ease;
+  }
+  #finishBtn:hover{background:var(--navy-2); transform:translateY(-1px);}
+  #finishBtn:disabled{background:#A7ADBB; cursor:not-allowed; box-shadow:none;}
+
+  /* OVERLAY */
+  .overlay{
+    position:fixed; inset:0;
+    background:rgba(15,20,33,.72);
+    backdrop-filter:blur(3px);
+    display:flex; align-items:center; justify-content:center;
+    z-index:100;
+    opacity:0; pointer-events:none;
+    transition:opacity .3s ease;
+    padding:20px;
+  }
+  .overlay.show{opacity:1; pointer-events:all;}
+  .result-card{
+    background:var(--cream);
+    border-radius:20px;
+    width:100%;
+    max-width:480px;
+    padding:36px 32px 32px;
+    text-align:center;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,.5);
+    transform:translateY(14px);
+    transition:transform .3s ease;
+  }
+  .overlay.show .result-card{transform:translateY(0);}
+
+  .loading-state .loading-text{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:var(--slate);
+    margin-bottom:18px;
+    letter-spacing:.04em;
+  }
+  .load-track{
+    height:10px; background:#E7E3D8; border-radius:100px; overflow:hidden; margin-bottom:10px;
+  }
+  .load-fill{
+    height:100%; width:0%;
+    background:linear-gradient(90deg,var(--navy),var(--gold));
+    border-radius:100px;
+  }
+  .load-pct{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted);}
+
+  .result-state{display:none;}
+  .result-state.show{display:block;}
+  .loading-state.hide{display:none;}
+
+  .gauge-wrap{position:relative; width:180px; height:180px; margin:6px auto 18px;}
+  .gauge-wrap svg{width:100%; height:100%; transform:rotate(-90deg);}
+  .gauge-bg{fill:none; stroke:#E7E3D8; stroke-width:12;}
+  .gauge-fg{fill:none; stroke:var(--gold); stroke-width:12; stroke-linecap:round; transition:stroke-dashoffset 1.1s cubic-bezier(.4,0,.2,1);}
+  .gauge-center{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+  .gauge-score{font-family:'Sora',sans-serif; font-weight:800; font-size:38px; color:var(--navy); line-height:1;}
+  .gauge-sub{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); margin-top:4px;}
+
+  .grade-badge{
+    display:inline-block;
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:14px;
+    padding:7px 20px;
+    border-radius:100px;
+    margin-bottom:16px;
+    letter-spacing:.02em;
+  }
+  .grade-excelente{background:#E1F0E6; color:var(--ok);}
+  .grade-bueno{background:#EAF1FB; color:#2A5DA8;}
+  .grade-regular{background:#FBF1DC; color:#96701C;}
+  .grade-insuficiente{background:#FBE7E3; color:var(--bad);}
+
+  .result-msg{font-size:14px; color:var(--slate); line-height:1.55; margin-bottom:22px;}
+  .result-stats{
+    display:flex; justify-content:center; gap:22px;
+    margin-bottom:24px;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .stat{text-align:center;}
+  .stat b{display:block; font-size:20px; color:var(--navy); font-family:'Sora',sans-serif;}
+  .stat span{font-size:11px; color:var(--muted);}
+
+  .close-btn{
+    background:transparent;
+    border:1.5px solid var(--navy);
+    color:var(--navy);
+    font-family:'Sora',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    padding:12px 28px;
+    border-radius:100px;
+    cursor:pointer;
+  }
+  .close-btn:hover{background:var(--navy); color:#fff;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="eyebrow">Proceso de selección · Área comercial</div>
+    <h1>Evaluación de Ingreso<br>Ejecutivo de Ventas — Call Center</h1>
+    <p>Esta prueba mide criterio comercial, manejo de objeciones y conocimiento técnico del rol. Respondé cada pregunta seleccionando la opción que consideres correcta. Al finalizar, vas a ver tu puntaje y tu nota.</p>
+    <div class="meta-row">
+      <div class="meta-pill">20 preguntas</div>
+      <div class="meta-pill">Opción múltiple</div>
+      <div class="meta-pill">Sin límite de tiempo</div>
+    </div>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-card">
+    <div class="progress-label" id="progressLabel">0 / 20 respondidas</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+</div>
+
+<main>
+  <form id="examForm"></form>
+
+  <div class="submit-zone">
+    <div class="hint" id="hintText">Respondé todas las preguntas para habilitar el envío</div>
+    <button id="finishBtn" type="button" disabled>Finalizar examen</button>
+  </div>
+</main>
+
+<div class="overlay" id="overlay">
+  <div class="result-card">
+
+    <div class="loading-state" id="loadingState">
+      <div class="loading-text" id="loadingText">CORRIGIENDO RESPUESTAS...</div>
+      <div class="load-track"><div class="load-fill" id="loadFill"></div></div>
+      <div class="load-pct" id="loadPct">0%</div>
+    </div>
+
+    <div class="result-state" id="resultState">
+      <div class="gauge-wrap">
+        <svg viewBox="0 0 180 180">
+          <circle class="gauge-bg" cx="90" cy="90" r="78"></circle>
+          <circle class="gauge-fg" id="gaugeFg" cx="90" cy="90" r="78" stroke-dasharray="490" stroke-dashoffset="490"></circle>
+        </svg>
+        <div class="gauge-center">
+          <div class="gauge-score" id="scorePct">0%</div>
+          <div class="gauge-sub">PUNTAJE FINAL</div>
+        </div>
+      </div>
+      <div id="gradeBadge" class="grade-badge">—</div>
+      <div class="result-msg" id="resultMsg">—</div>
+      <div class="result-stats">
+        <div class="stat"><b id="statCorrect">0</b><span>CORRECTAS</span></div>
+        <div class="stat"><b id="statWrong">0</b><span>INCORRECTAS</span></div>
+        <div class="stat"><b id="statTotal">20</b><span>TOTAL</span></div>
+      </div>
+      <button class="close-btn" id="closeBtn" type="button">Cerrar resultado</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+{q:"Un cliente te dice: 'Está muy caro, en otro lado lo consigo más barato'. ¿Cuál es la mejor respuesta inicial?",
+ o:["Bajar el precio de inmediato para no perder la venta","Indagar con qué está comparando exactamente antes de argumentar","Decirle que entonces compre en el otro lugar","Ignorar el comentario y seguir con el guion de venta"], c:1},
+{q:"En la escucha activa, ¿cuál de estas acciones NO corresponde a la técnica?",
+ o:["Parafrasear lo que dijo el cliente","Hacer preguntas abiertas para profundizar","Preparar tu respuesta mientras el cliente todavía está hablando","Confirmar que entendiste antes de responder"], c:2},
+{q:"¿Qué significa la sigla KPI en el contexto de un call center de ventas?",
+ o:["Key Process Indicator","Key Performance Indicator","Known Performance Input","Key Point of Interaction"], c:1},
+{q:"Un lead 'calificado' (SQL) se diferencia de un lead simple principalmente porque:",
+ o:["Ya dejó su número de teléfono","Fue validado según criterios de perfil y momento de compra","Contestó el teléfono al primer intento","Está en la base de datos hace más tiempo"], c:1},
+{q:"Durante el cierre de venta, la técnica de 'cierre por alternativa' consiste en:",
+ o:["Preguntar directamente si el cliente quiere comprar o no","Ofrecer dos opciones válidas, ambas de compra, para que el cliente elija una","Repetir el precio varias veces hasta que el cliente decida","Darle al cliente tiempo indefinido para pensarlo"], c:1},
+{q:"Si un cliente plantea una objeción real y válida (no una excusa), lo más profesional es:",
+ o:["Rebatirla con otro argumento comercial sin reconocerla","Reconocerla, dar información objetiva y dejar que el cliente decida","Cambiar de tema para que se olvide","Insistir en cerrar la venta igual"], c:1},
+{q:"¿Cuál de estas métricas mide mejor la eficiencia comercial de un vendedor, y no solo su actividad?",
+ o:["Cantidad de llamadas realizadas por día","Tiempo promedio en línea","Tasa de conversión de llamadas a ventas","Cantidad de intentos de contacto"], c:2},
+{q:"Un cliente indeciso dice 'lo voy a pensar'. La respuesta con mejor criterio comercial es:",
+ o:["Aceptar y cortar la llamada sin más preguntas","Indagar qué duda específica tiene para poder resolverla ahora","Insistir agresivamente para que decida en el momento","Ofrecer un descuento grande de inmediato sin que lo pida"], c:1},
+{q:"En el rapport telefónico, el objetivo principal en los primeros 30 segundos de la llamada es:",
+ o:["Presentar todos los beneficios del producto","Generar confianza y bajar la resistencia inicial del cliente","Confirmar los datos personales del cliente","Preguntar el presupuesto disponible"], c:1},
+{q:"¿Cuál de las siguientes NO es una objeción típica de precio, sino una objeción de confianza disfrazada?",
+ o:["'Es más caro que la competencia'","'No sé si esto realmente funciona como decís'","'No tengo el dinero ahora'","'El precio no está dentro de mi presupuesto mensual'"], c:1},
+{q:"El 'efecto ancla' en una negociación de precio se produce cuando:",
+ o:["El cliente pide referencias antes de comprar","El primer número mencionado condiciona la percepción de todo lo que sigue","El vendedor ofrece financiación en cuotas","El cliente compara dos productos similares"], c:1},
+{q:"Si un cliente se muestra molesto por una demora en el servicio, el primer paso correcto es:",
+ o:["Explicar de inmediato por qué ocurrió la demora","Validar su malestar antes de dar explicaciones","Ofrecer un descuento para calmarlo","Transferir la llamada a otro sector sin comentarle nada"], c:1},
+{q:"En ventas consultivas, el orden más adecuado de una llamada efectiva es:",
+ o:["Presentar precio, indagar necesidad, cerrar","Indagar necesidad, presentar solución, cerrar","Cerrar, indagar necesidad, presentar precio","Presentar producto, cerrar, indagar necesidad"], c:1},
+{q:"¿Qué es el 'churn' en el contexto de ventas y retención de clientes?",
+ o:["La cantidad de nuevos clientes captados por mes","La tasa de clientes que cancelan o dejan de comprar en un período","El promedio de llamadas exitosas por vendedor","El tiempo que tarda un cliente en pagar una factura"], c:1},
+{q:"Un cliente pregunta algo que no sabés responder con certeza. Lo correcto es:",
+ o:["Inventar una respuesta rápida para no perder credibilidad","Reconocer que no tenés el dato exacto y comprometerte a confirmarlo","Cambiar de tema y evitar la pregunta","Decirle que eso no es importante para la compra"], c:1},
+{q:"El 'valor percibido' de un producto se refiere a:",
+ o:["El precio de lista fijado por la empresa","Lo que el cliente cree que vale en función de sus beneficios, no solo el precio","El costo de producción del producto","El descuento máximo autorizado por el supervisor"], c:1},
+{q:"En una llamada saliente (outbound), la mejor práctica al iniciar es:",
+ o:["Hablar rápido para cubrir todo el guion antes de que corten","Identificarte, dar el motivo claro de la llamada y verificar que sea buen momento","Preguntar primero si tiene tarjeta de crédito disponible","Leer el guion textual sin adaptarlo al cliente"], c:1},
+{q:"¿Cuál de estas opciones describe mejor una objeción de 'timing' (momento)?",
+ o:["'No confío en la marca'","'Ahora no es un buen momento, tal vez el mes que viene'","'Es muy caro para lo que ofrece'","'No entiendo cómo funciona el producto'"], c:1},
+{q:"Si te piden vender un producto que sabés que no se ajusta bien a la necesidad real del cliente, lo correcto según buenas prácticas comerciales es:",
+ o:["Venderlo igual porque cumple con la meta del mes","Ofrecer la opción que mejor se ajuste, aunque tenga menor comisión","Insistir en el producto original sin mencionar alternativas","Evitar el tema y dejar que el cliente decida sin más información"], c:1},
+{q:"El 'follow-up' (seguimiento) después de una primera llamada sin cierre sirve principalmente para:",
+ o:["Presionar al cliente hasta que compre","Mantener el vínculo, resolver dudas pendientes y acompañar la decisión","Ofrecer siempre un descuento adicional","Confirmar que el cliente no comprará y cerrar el caso"], c:1}
+];
+
+const form = document.getElementById('examForm');
+QUESTIONS.forEach((item, idx) => {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = 'card-' + idx;
+
+  const head = document.createElement('div');
+  head.className = 'q-head';
+  head.innerHTML = `<div class="q-num">P${(idx+1).toString().padStart(2,'0')}</div><div class="q-text">${item.q}</div>`;
+  card.appendChild(head);
+
+  const opts = document.createElement('div');
+  opts.className = 'options';
+  item.o.forEach((optText, oIdx) => {
+    const label = document.createElement('label');
+    label.className = 'option';
+    label.innerHTML = `<input type="radio" name="q${idx}" value="${oIdx}"> <span>${optText}</span>`;
+    label.addEventListener('click', () => {
+      card.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+      label.classList.add('selected');
+      card.classList.add('answered');
+      updateProgress();
+    });
+    opts.appendChild(label);
+  });
+  card.appendChild(opts);
+  form.appendChild(card);
+});
+
+const progressFill = document.getElementById('progressFill');
+const progressLabel = document.getElementById('progressLabel');
+const finishBtn = document.getElementById('finishBtn');
+const hintText = document.getElementById('hintText');
+
+function updateProgress(){
+  const answered = QUESTIONS.filter((_, idx) => form.querySelector(`input[name="q${idx}"]:checked`)).length;
+  const pct = (answered / QUESTIONS.length) * 100;
+  progressFill.style.width = pct + '%';
+  progressLabel.textContent = `${answered} / ${QUESTIONS.length} respondidas`;
+  if(answered === QUESTIONS.length){
+    finishBtn.disabled = false;
+    hintText.textContent = 'Listo para enviar';
+  } else {
+    finishBtn.disabled = true;
+    hintText.textContent = 'Respondé todas las preguntas para habilitar el envío';
+  }
+}
+
+const overlay = document.getElementById('overlay');
+const loadingState = document.getElementById('loadingState');
+const resultState = document.getElementById('resultState');
+const loadFill = document.getElementById('loadFill');
+const loadPct = document.getElementById('loadPct');
+
+finishBtn.addEventListener('click', () => {
+  let correct = 0;
+  QUESTIONS.forEach((item, idx) => {
+    const val = form.querySelector(`input[name="q${idx}"]:checked`);
+    if(val && parseInt(val.value) === item.c) correct++;
+  });
+  const total = QUESTIONS.length;
+  const scorePct = Math.round((correct/total)*100);
+
+  loadingState.classList.remove('hide');
+  resultState.classList.remove('show');
+  overlay.classList.add('show');
+  loadFill.style.width = '0%';
+  loadPct.textContent = '0%';
+
+  let p = 0;
+  const iv = setInterval(() => {
+    p += Math.random()*14 + 6;
+    if(p >= 100){ p = 100; clearInterval(iv); }
+    loadFill.style.width = p + '%';
+    loadPct.textContent = Math.round(p) + '%';
+    if(p === 100){
+      setTimeout(() => showResult(correct, total, scorePct), 350);
+    }
+  }, 180);
+});
+
+function showResult(correct, total, scorePct){
+  loadingState.classList.add('hide');
+  resultState.classList.add('show');
+
+  document.getElementById('statCorrect').textContent = correct;
+  document.getElementById('statWrong').textContent = total - correct;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('scorePct').textContent = scorePct + '%';
+
+  const circumference = 490;
+  const offset = circumference - (circumference * scorePct/100);
+  const gaugeFg = document.getElementById('gaugeFg');
+  requestAnimationFrame(() => { gaugeFg.style.strokeDashoffset = offset; });
+
+  const badge = document.getElementById('gradeBadge');
+  const msg = document.getElementById('resultMsg');
+  badge.className = 'grade-badge';
+
+  if(scorePct >= 90){
+    badge.classList.add('grade-excelente'); badge.textContent = 'EXCELENTE — Apto avanzado';
+    msg.textContent = 'Demostraste un criterio comercial sólido y buen manejo de objeciones. Perfil recomendado para avanzar a entrevista.';
+  } else if(scorePct >= 75){
+    badge.classList.add('grade-bueno'); badge.textContent = 'BUENO — Apto';
+    msg.textContent = 'Buen desempeño general, con algunos conceptos a reforzar en la etapa de capacitación.';
+  } else if(scorePct >= 55){
+    badge.classList.add('grade-regular'); badge.textContent = 'REGULAR — A revisar';
+    msg.textContent = 'Manejás nociones básicas, pero hay conceptos clave de venta consultiva que necesitan más práctica.';
+  } else {
+    badge.classList.add('grade-insuficiente'); badge.textContent = 'INSUFICIENTE — No apto por ahora';
+    msg.textContent = 'El puntaje está por debajo del mínimo requerido para el rol. Se recomienda repasar fundamentos de venta y objeciones.';
+  }
+}
+
+document.getElementById('closeBtn').addEventListener('click', () => {
+  overlay.classList.remove('show');
+});
+
+updateProgress();
+</script>
+
+</body>
+</html>
